@@ -47,6 +47,33 @@ public interface AchargeDAO extends JpaRepository<Acharge, Integer> {
 	List<SumRec> getDebit(@Param("lsk") String lsk, @Param("period") Integer period);
 ЕСЛИ нужно чтобы поле заполнялось как null в DTO, тогда просто не нужно его указывать в списке алиасов "as", не надо делать null as "blabla"
 
+// JpaRepostiory DAO - Удалить записи
+	@Modifying
+	@Transactional
+	@Query(value = "delete from DebPenUsl t where t.period=:period and "
+			+ " t.kart.lsk=:lsk) "
+			)
+	void delByLskPeriod(@Param("lsk") String lsk, @Param("period") Integer period);
+
+// JpaRepostiory DAO - Удалить записи с EXISTS
+
+	@Modifying
+	@Transactional
+	@Query(value = "delete from DebPenUsl t where t.period=:period and "
+			+ "exists (select k from Kart k where t.kart.lsk=k.lsk and k.lsk=:lsk) ")
+	void delByLskPeriod(@Param("lsk") String lsk, @Param("period") Integer period);
+	
+// Конструктор Sparkle, вызов:
+
+	DebPenUsl debPenUsl = DebPenUsl.builder()
+						.withKart(kart)
+						.withUsl(em.find(Usl.class, t.getUslOrg().getUslId()))
+						...
+						
+// Durian diffplug:
+	res.getNsiItemInfo().stream().forEach(Errors.rethrow().wrap(t -> {
+		updNsiList(lst, t, grp);
+		}));
 
 
 // DTO для хранения записи, полученной из метода в JpaRepository
