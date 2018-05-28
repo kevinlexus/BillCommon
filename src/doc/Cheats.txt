@@ -158,3 +158,40 @@ public class VchangeDet implements java.io.Serializable  {
 // HALF_UP - для использования в деньгах!
  vl = vl.setScale(2, RoundingMode.HALF_UP);
 	
+// RuntimeException:
+
+				try {
+					// РАСЧЕТ задолжности и пени по услуге
+					return debitThrMng.genDebitUsl(kart, t, calcStore, localStore).stream();
+				} catch (ErrorWhileChrgPen e) {
+					e.printStackTrace();
+					throw new RuntimeException("ОШИБКА в процессе начисления пени по лc.="+lsk);
+				}
+	
+// Generics (Дженерики (Обобщения))
+// интерфейс:
+
+public interface ThreadMng<T> {
+
+	void invokeThreads(CalcStore calcStore, int cntThreads, List<T> lstItem);
+
+}
+
+// реализация:
+	// получить следующий объект, для расчета в потоках
+	private T getNextItem(List<T> lstItem) {
+		Iterator<T> itr = lstItem.iterator();
+		T item = null;
+		if (itr.hasNext()) {
+			item  = itr.next();
+			itr.remove();
+		}
+
+		return item;
+	}
+
+////////////////////////////////////////////////////////////
+
+
+
+	
