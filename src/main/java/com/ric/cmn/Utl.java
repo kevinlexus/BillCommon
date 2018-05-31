@@ -622,5 +622,26 @@ public class Utl {
 		}
 		return retVal;
 	}
+
+	/**
+	 * Сравнить два BigDecimal, без учета null
+	 * @param bdOne
+	 * @param bdTwo
+	 * @return
+	 */
+	public static boolean isEqual(BigDecimal bdOne, BigDecimal bdTwo){
+		 return Utl.nvl(bdOne, BigDecimal.ZERO)
+				 .compareTo(Utl.nvl(bdTwo, BigDecimal.ZERO))==0;
+	}
+
+	/**
+	 * Сравнить два Integer, без учета null
+	 * @param bdOne
+	 * @param bdTwo
+	 * @return
+	 */
+	public static boolean isEqual(Integer bdOne, Integer bdTwo){
+		 return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
+	}
 }
 
