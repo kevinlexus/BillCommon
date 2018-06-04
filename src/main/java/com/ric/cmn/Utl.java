@@ -166,6 +166,26 @@ public class Utl {
 		return between(checkDt1, dt1, dt2) || between(checkDt2, dt1, dt2);
 	}
 
+	/**
+	 * вернуть true если код находится в диапазоне
+	 * @param checkReu - проверяемый код
+	 * @param reuFrom - начало диапазона
+	 * @param reuTo - окончание диапазона
+	 * @return
+	 */
+	public static boolean between2(String checkReu, String reuFrom, String reuTo) {
+		Integer iCheckReu = Integer.parseInt(checkReu);
+		Integer iReuFrom = Integer.parseInt(reuFrom);
+		Integer iReuTo = Integer.parseInt(reuTo);
+		int chk1 = iCheckReu.compareTo(iReuFrom);
+		int chk2 = iCheckReu.compareTo(iReuTo);
+		if (chk1 >= 0 && chk2 <= 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	// вернуть кол-во лет между датами
 	public static int getDiffYears(Date first, Date last) { // TODO Переделать на Java 8 LocalDateTime
 	    Calendar a = getCalendar(first);
