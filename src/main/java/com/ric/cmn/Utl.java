@@ -47,7 +47,7 @@ public class Utl {
 	 * @param список
 	 * @return - находится в списке?
 	 */
-	public static <T> boolean in(T value, T... list) {
+	public static <T> boolean in(T value, @SuppressWarnings("unchecked") T... list) {
 	    for (T item : list) {
 	        if (value.equals(item))
 	            return true;
@@ -180,6 +180,21 @@ public class Utl {
 		int chk1 = iCheckReu.compareTo(iReuFrom);
 		int chk2 = iCheckReu.compareTo(iReuTo);
 		if (chk1 >= 0 && chk2 <= 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * вернуть true если число находится в диапазоне
+	 * @param checkId - проверяемое число
+	 * @param idFrom - начало диапазона
+	 * @param idTo - окончание диапазона
+	 * @return
+	 */
+	public static boolean between2(int checkId, int idFrom, int idTo) {
+		if (checkId >= idFrom && checkId <= idTo) {
 			return true;
 		} else {
 			return false;

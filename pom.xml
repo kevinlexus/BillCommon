@@ -10,6 +10,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<!-- Spring -->
+		<spring-framework.version>5.0.5.RELEASE</spring-framework.version>
 	</properties>
 
   	<parent>
@@ -36,6 +38,11 @@
 		    <groupId>org.apache.commons</groupId>
 		    <artifactId>commons-lang3</artifactId>
 		</dependency>
+		
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-cache</artifactId> 
+	    </dependency>
 
 	</dependencies>
 
