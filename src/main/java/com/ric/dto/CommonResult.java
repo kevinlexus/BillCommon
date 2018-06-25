@@ -1,4 +1,4 @@
-package com.ric.cmn;
+package com.ric.dto;
 
 import lombok.Getter;
 import lombok.Setter;
