@@ -664,5 +664,6 @@ public class Utl {
 	public static boolean isEqual(Integer bdOne, Integer bdTwo){
 		 return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
 	}
+
 }
 
