@@ -13,11 +13,12 @@ public interface SumSaldoRec {
 	BigDecimal getIndebet();
 	// вх.кредит
 	BigDecimal getInkredit();
-
 	// исх.дебет
 	BigDecimal getOutdebet();
 	// исх.кредит
 	BigDecimal getOutkredit();
 	// оплата
 	BigDecimal getPayment();
+	// перерасчеты
+	BigDecimal getChanges();
 }

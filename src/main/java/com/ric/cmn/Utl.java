@@ -43,8 +43,8 @@ public class Utl {
 
 	/**
 	 * Аналог SQL IN
-	 * @param значение
-	 * @param список
+	 * @param value - значение
+	 * @param list - список
 	 * @return - находится в списке?
 	 */
 	public static <T> boolean in(T value, @SuppressWarnings("unchecked") T... list) {
