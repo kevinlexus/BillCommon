@@ -2,8 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ric.cmn</groupId>
   <artifactId>BillCommon</artifactId>
-    <packaging>pom</packaging>
-    <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
     <name>BillCommon</name>
   <description>Common utilities for BillWeb and Others</description>
 
@@ -47,5 +46,17 @@
 
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>
