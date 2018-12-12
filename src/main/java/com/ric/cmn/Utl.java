@@ -606,6 +606,18 @@ public class Utl {
     }
 
 	/**
+	 * Выполнить усечение до секунд (отбросить миллисекунды)
+	 * @param date
+	 * @return
+	 */
+	public static Date truncDateToSeconds(Date date) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.MILLISECOND, 0);
+		return calendar.getTime();
+	}
+
+	/**
 	 * Добавить путь в classpath
 	 * @param s
 	 * @throws Exception
