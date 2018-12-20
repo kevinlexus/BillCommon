@@ -530,7 +530,7 @@ public class Utl {
 	 * @param dt - дата вх.
 	 * @return
 	 */
-	public static double getCntDaysByDate(Date dt) {
+	public static int getCntDaysByDate(Date dt) {
 		Calendar calendar = new GregorianCalendar();
 		calendar.clear(Calendar.ZONE_OFFSET);
 		calendar.setTime(dt);
