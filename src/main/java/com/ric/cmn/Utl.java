@@ -202,7 +202,7 @@ public class Utl {
 	}
 
 	// вернуть кол-во лет между датами
-	public static int getDiffYears(Date first, Date last) { // TODO Переделать на Java 8 LocalDateTime
+	public static int getDiffYears(Date first, Date last) {
 	    Calendar a = getCalendar(first);
 	    Calendar b = getCalendar(last);
 	    int diff = b.get(Calendar.YEAR) - a.get(Calendar.YEAR);
