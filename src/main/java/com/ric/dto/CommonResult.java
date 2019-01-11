@@ -9,20 +9,20 @@ import lombok.Setter;
  *
  */
 public class CommonResult {
-	String lsk;
+	int klskId;
 	Integer err;
 
-	public CommonResult(String lsk, Integer err) {
-		this.lsk = lsk;
+	public CommonResult(int klskId, Integer err) {
+		this.klskId = klskId;
 		this.err = err;
 	}
 
-	public String getLsk() {
-		return lsk;
+	public int getLsk() {
+		return klskId;
 	}
 
-	public void setLsk(String lsk) {
-		this.lsk = lsk;
+	public void setKlskId(int klskId) {
+		this.klskId = klskId;
 	}
 
 	public Integer getErr() {
