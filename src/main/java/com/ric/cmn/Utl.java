@@ -691,15 +691,14 @@ public class Utl {
 							.setScale(round, BigDecimal.ROUND_HALF_UP);
 			// уменьшить общую сумму;
 			sum = sum.subtract(elem.getBdForDist());
-			// снять сумму с элемента
+			// добавить сумму в элемент
 			elem.setBdForDist(elem.getBdForDist().add(sumSubstract));
 			// удалить элемент, если ноль
-			//System.out.println("elem="+elem.getBdForDist().setScale(round,BigDecimal.ROUND_HALF_UP));
 			if (elem.getBdForDist().setScale(round, BigDecimal.ROUND_HALF_UP)
 					.equals(new BigDecimal("0.E-"+round))) {
 				iter.remove();
 			}
-			// снять сумму с числа для распределения
+			// вычесть сумму из числа для распределения
 			bd = bd.subtract(sumSubstract);
 		}
 
