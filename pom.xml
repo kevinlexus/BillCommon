@@ -12,6 +12,8 @@
 		<java.version>1.8</java.version>
 		<!-- Spring -->
 		<spring-framework.version>5.0.5.RELEASE</spring-framework.version>
+		<!-- Test -->
+		<junit.version>4.12</junit.version>
 	</properties>
 
   	<parent>
@@ -43,6 +45,18 @@
 	      <groupId>org.springframework.boot</groupId>
 	      <artifactId>spring-boot-starter-cache</artifactId>
 	    </dependency>
+
+		<!-- https://mvnrepository.com/artifact/junit/junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 

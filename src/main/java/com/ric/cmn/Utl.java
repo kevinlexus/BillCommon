@@ -17,11 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -675,6 +671,38 @@ public class Utl {
 	 */
 	public static boolean isEqual(Integer bdOne, Integer bdTwo){
 		 return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
+	}
+
+	/**
+	 * Распределить число по коллекции чисел, пропорционально вычесть из каждого элемента lst
+	 * внести изменения в коллекцию lst, удалить нули
+	 * @param bd - число для распределения
+	 * @param lst  - коллекция, содержащая числа по которым нужно распределить
+	 * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
+	 */
+	public static void distBigDecimalByList(BigDecimal bd, List<? extends BigDecimalDistributable> lst, int round) {
+		BigDecimal sum = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		ListIterator<? extends BigDecimalDistributable> iter = lst.listIterator();
+		while (iter.hasNext()) {
+			BigDecimalDistributable elem = iter.next();
+			// найти пропорцию снятия с данного элемента
+			BigDecimal sumSubstract =
+					bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))
+							.setScale(round, BigDecimal.ROUND_HALF_UP);
+			// уменьшить общую сумму;
+			sum = sum.subtract(elem.getBdForDist());
+			// снять сумму с элемента
+			elem.setBdForDist(elem.getBdForDist().add(sumSubstract));
+			// удалить элемент, если ноль
+			//System.out.println("elem="+elem.getBdForDist().setScale(round,BigDecimal.ROUND_HALF_UP));
+			if (elem.getBdForDist().setScale(round, BigDecimal.ROUND_HALF_UP)
+					.equals(new BigDecimal("0.E-"+round))) {
+				iter.remove();
+			}
+			// снять сумму с числа для распределения
+			bd = bd.subtract(sumSubstract);
+		}
+
 	}
 
 }
