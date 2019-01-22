@@ -628,9 +628,6 @@ public class Utl {
 	    method.invoke(urlClassLoader, new Object[]{u.toURL()});
 	}
 
-	static long startTime = 0;
-
-
 	public static String getStackTraceString(Throwable ex) {
 		StringWriter errors = new StringWriter();
 		ex.printStackTrace(new PrintWriter(errors));
