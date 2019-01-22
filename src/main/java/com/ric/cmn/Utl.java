@@ -680,11 +680,11 @@ public class Utl {
 	 * @param lst  - коллекция, содержащая числа по которым нужно распределить
 	 * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
 	 */
-	public static void distBigDecimalByList(BigDecimal bd, List<? extends BigDecimalDistributable> lst, int round) {
+	public static void distBigDecimalByList(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
 		BigDecimal sum = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
-		ListIterator<? extends BigDecimalDistributable> iter = lst.listIterator();
+		ListIterator<? extends DistributableBigDecimal> iter = lst.listIterator();
 		while (iter.hasNext()) {
-			BigDecimalDistributable elem = iter.next();
+			DistributableBigDecimal elem = iter.next();
 			// найти пропорцию снятия с данного элемента
 			BigDecimal sumSubstract =
 					bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))

@@ -1,4 +1,4 @@
-import com.ric.cmn.BigDecimalDistributable;
+import com.ric.cmn.DistributableBigDecimal;
 import com.ric.cmn.Utl;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,7 +26,7 @@ public class TestUtl {
 
         // любой класс, реализующий интерфейс "распределяемый BD"
         @Getter @Setter
-        class Check implements BigDecimalDistributable {
+        class Check implements DistributableBigDecimal {
             int someIdx;
             String someStr;
             BigDecimal someValue;
@@ -62,13 +62,13 @@ public class TestUtl {
         BigDecimal amnt = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("amnt={}", amnt);
 
-        //List<BigDecimalDistributable> ddd = lst;
+        //List<DistributableBigDecimal> ddd = lst;
         // распределить
         BigDecimal val = new BigDecimal("-332.7929481");
         Utl.distBigDecimalByList(val, lst, 7);
 
         log.info("распределение:");
-        for (BigDecimalDistributable t : lst) {
+        for (DistributableBigDecimal t : lst) {
             log.info("elem = {}", new DecimalFormat("#0.#############").format(t.getBdForDist()));
         }
         log.info("");
