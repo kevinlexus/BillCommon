@@ -672,7 +672,7 @@ public class Utl {
 
 	/**
 	 * Распределить число по коллекции чисел, пропорционально вычесть из каждого элемента lst
-	 * внести изменения в коллекцию lst, удалить нули
+	 * внести ИЗМЕНЕНИЯ(!) в коллекцию lst, УДАЛИТЬ(!) элементы с нулями
 	 * @param bd - число для распределения
 	 * @param lst  - коллекция, содержащая числа по которым нужно распределить
 	 * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
@@ -699,6 +699,33 @@ public class Utl {
 			bd = bd.subtract(sumSubstract);
 		}
 
+	}
+
+	/**
+	 * Распределить число по коллекции чисел, вернуть Map элементов с корректировками
+	 * @param bd - число для распределения
+	 * @param lst  - коллекция, содержащая числа по которым нужно распределить
+	 * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
+	 */
+	public static Map<DistributableBigDecimal, BigDecimal>
+			distBigDecimalByListIntoMap(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
+		Map<DistributableBigDecimal, BigDecimal> mapVol = new HashMap<>();
+		BigDecimal sum = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
+		ListIterator<? extends DistributableBigDecimal> iter = lst.listIterator();
+		while (iter.hasNext()) {
+			DistributableBigDecimal elem = iter.next();
+			// найти пропорцию снятия с данного элемента
+			BigDecimal sumSubstract =
+					bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))
+							.setScale(round, BigDecimal.ROUND_HALF_UP);
+			// уменьшить общую сумму;
+			sum = sum.subtract(elem.getBdForDist());
+			// добавить сумму в элемент
+			mapVol.put(elem, sumSubstract);
+			// вычесть сумму из числа для распределения
+			bd = bd.subtract(sumSubstract);
+		}
+		return mapVol;
 	}
 
 }
