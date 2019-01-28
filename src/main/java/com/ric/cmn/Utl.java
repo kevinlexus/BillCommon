@@ -718,6 +718,7 @@ public class Utl {
 			BigDecimal sumSubstract =
 					bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))
 							.setScale(round, BigDecimal.ROUND_HALF_UP);
+
 			// уменьшить общую сумму;
 			sum = sum.subtract(elem.getBdForDist());
 			// добавить сумму в элемент
