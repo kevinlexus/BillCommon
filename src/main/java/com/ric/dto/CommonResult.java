@@ -9,15 +9,15 @@ import lombok.Setter;
  *
  */
 public class CommonResult {
-	int klskId;
+	long klskId;
 	Integer err;
 
-	public CommonResult(int klskId, Integer err) {
+	public CommonResult(long klskId, Integer err) {
 		this.klskId = klskId;
 		this.err = err;
 	}
 
-	public int getLsk() {
+	public long getLsk() {
 		return klskId;
 	}
 
