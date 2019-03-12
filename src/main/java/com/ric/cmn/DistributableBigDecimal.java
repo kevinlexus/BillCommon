@@ -1,4 +1,4 @@
-package com.ric.dto;
+package com.ric.cmn;
 
 import java.math.BigDecimal;
 
