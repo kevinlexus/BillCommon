@@ -1,16 +1,17 @@
 package com.ric.cmn;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.net.InetAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -18,14 +19,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Утилиты
@@ -727,9 +720,8 @@ public class Utl {
     /**
      * Сравнить два Integer, без учета null
      *
-     * @param bdOne
-     * @param bdTwo
-     * @return
+     * @param bdOne - первое число
+     * @param bdTwo - второе число
      */
     public static boolean isEqual(Integer bdOne, Integer bdTwo) {
         return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
@@ -744,8 +736,8 @@ public class Utl {
      * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
      */
     public static void distBigDecimalByList(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
-        BigDecimal sum = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
-        if (sum.compareTo(BigDecimal.ZERO) != 0){
+        BigDecimal sum = lst.stream().map(DistributableBigDecimal::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (sum.compareTo(BigDecimal.ZERO) != 0) {
             ListIterator<? extends DistributableBigDecimal> iter = lst.listIterator();
             while (iter.hasNext()) {
                 DistributableBigDecimal elem = iter.next();
@@ -778,10 +770,8 @@ public class Utl {
     public static Map<DistributableBigDecimal, BigDecimal>
     distBigDecimalByListIntoMap(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
         Map<DistributableBigDecimal, BigDecimal> mapVol = new HashMap<>();
-        BigDecimal sum = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
-        ListIterator<? extends DistributableBigDecimal> iter = lst.listIterator();
-        while (iter.hasNext()) {
-            DistributableBigDecimal elem = iter.next();
+        BigDecimal sum = lst.stream().map(DistributableBigDecimal::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
+        for (DistributableBigDecimal elem : lst) {
             // найти пропорцию снятия с данного элемента
             BigDecimal sumSubstract =
                     bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))
