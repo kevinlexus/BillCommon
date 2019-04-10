@@ -18,7 +18,6 @@ public class TestUtl {
 
     /**
      * проверка распределения Bigdecimal числа по коллекции Bigdecimal чисел
-     * @throws Exception
      */
     @Test
     public void isWorkUtlDistBigDecimalByList() throws Exception {
@@ -123,7 +122,7 @@ public class TestUtl {
         lst.add(new KartVol("0009", new BigDecimal("5.23")));
         lst.add(new KartVol("0010", new BigDecimal("1.23")));
 
-        BigDecimal amnt = lst.stream().map(t -> t.getBdForDist()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal amnt = lst.stream().map(KartVol::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("amnt area={}", amnt);
 
         // распределить
@@ -138,7 +137,7 @@ public class TestUtl {
         }
 
         log.info("");
-        BigDecimal amntDist = map.entrySet().stream().map(t->t.getValue()).reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal amntDist = map.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("итого = {}", amntDist);
 
     }
