@@ -199,6 +199,16 @@ public class Utl {
         }
     }
 
+    /**
+     * Находится ли одно BigDecimal в диапазоне двух других BigDecimal, включительно
+     * @param bd - значение для поиска
+     * @param rangeBegin - диапазон, начало
+     * @param rangeEnd - диапазон, окончание
+     */
+    public static boolean between(BigDecimal bd, BigDecimal rangeBegin, BigDecimal rangeEnd) {
+        return  (bd.compareTo(rangeBegin) >= 0 && bd.compareTo(rangeEnd) <= 0);
+    }
+
     // вернуть кол-во лет между датами
     public static int getDiffYears(Date first, Date last) {
         Calendar a = getCalendar(first);
@@ -786,6 +796,5 @@ public class Utl {
         }
         return mapVol;
     }
-
 }
 
