@@ -165,22 +165,17 @@ public class Utl {
     /**
      * вернуть true если код находится в диапазоне
      *
-     * @param checkReu - проверяемый код
-     * @param reuFrom  - начало диапазона
-     * @param reuTo    - окончание диапазона
-     * @return
+     * @param checkNum - проверяемый код
+     * @param numFrom  - начало диапазона
+     * @param numTo    - окончание диапазона
      */
-    public static boolean between2(String checkReu, String reuFrom, String reuTo) {
-        Integer iCheckReu = Integer.parseInt(checkReu);
-        Integer iReuFrom = Integer.parseInt(reuFrom);
-        Integer iReuTo = Integer.parseInt(reuTo);
+    public static boolean between2(String checkNum, String numFrom, String numTo) {
+        Integer iCheckReu = Integer.parseInt(checkNum);
+        Integer iReuFrom = Integer.parseInt(numFrom);
+        Integer iReuTo = Integer.parseInt(numTo);
         int chk1 = iCheckReu.compareTo(iReuFrom);
         int chk2 = iCheckReu.compareTo(iReuTo);
-        if (chk1 >= 0 && chk2 <= 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return chk1 >= 0 && chk2 <= 0;
     }
 
     /**
