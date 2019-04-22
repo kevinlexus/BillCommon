@@ -792,5 +792,26 @@ public class Utl {
         }
         return mapVol;
     }
+
+    /**
+     * Получить преобразованную по шаблону строку
+     * @param str - исходная строка
+     * @param par - параметры
+     */
+    public static String getStrUsingTemplate(String str, Object... par) {
+        for (Object o : par) {
+            String objStr = null;
+            if (o instanceof BigDecimal) {
+                objStr = o.toString();
+            } else if (o instanceof String) {
+                objStr = (String)o;
+            } else if (o instanceof Integer) {
+                objStr = String.valueOf(o);
+            }
+            assert objStr != null;
+            str = str.replaceFirst("\\{}", objStr);
+        }
+        return str;
+    }
 }
 
