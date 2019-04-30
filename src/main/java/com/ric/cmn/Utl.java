@@ -1,5 +1,6 @@
 package com.ric.cmn;
 
+import com.ric.cmn.excp.WrongParam;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -196,12 +197,13 @@ public class Utl {
 
     /**
      * Находится ли одно BigDecimal в диапазоне двух других BigDecimal, включительно
-     * @param bd - значение для поиска
+     *
+     * @param bd         - значение для поиска
      * @param rangeBegin - диапазон, начало
-     * @param rangeEnd - диапазон, окончание
+     * @param rangeEnd   - диапазон, окончание
      */
     public static boolean between(BigDecimal bd, BigDecimal rangeBegin, BigDecimal rangeEnd) {
-        return  (bd.compareTo(rangeBegin) >= 0 && bd.compareTo(rangeEnd) <= 0);
+        return (bd.compareTo(rangeBegin) >= 0 && bd.compareTo(rangeEnd) <= 0);
     }
 
     // вернуть кол-во лет между датами
@@ -732,6 +734,51 @@ public class Utl {
         return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
     }
 
+
+    /**
+     * Распределить одну коллекцию чисел по другой (например кредит по дебету)
+     *
+     * @param lst   - список который распределить (положительные значения!)
+     * @param lst2  - список по которому распределить (положительные значения!)
+     * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
+     * @return - коллекцию корректировок (например для T_CORRECTS_PAYMENTS)
+     */
+    public static HashMap<Integer, Map<DistributableBigDecimal, BigDecimal>>
+    distListByListIntoMap(List<? extends DistributableBigDecimal> lst,
+                          List<? extends DistributableBigDecimal> lst2, int round)
+            throws WrongParam {
+        // найти итоги списков
+        BigDecimal amntLst = lst.stream().map(DistributableBigDecimal::getBdForDist).
+                reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal amntLst2 = lst2.stream().map(DistributableBigDecimal::getBdForDist).
+                reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (amntLst.compareTo(BigDecimal.ZERO) == 0) {
+            throw new WrongParam("ОШИБКА! Итог списка для распределения равен нулю");
+        } else if (amntLst2.compareTo(BigDecimal.ZERO) == 0) {
+            throw new WrongParam("ОШИБКА! Итог списка по которому распределить равен нулю");
+        }
+        BigDecimal limitDist;
+        if (amntLst.compareTo(amntLst2) > 0) {
+            // снять сумму второго списка
+            limitDist = amntLst2;
+        } else {
+            // снять полностью всю сумму с первого списка
+            limitDist = amntLst;
+        }
+
+        HashMap<Integer, Map<DistributableBigDecimal, BigDecimal>> mapRet =
+                new HashMap<Integer, Map<DistributableBigDecimal, BigDecimal>>();
+        // корректировки снятия с первого списка
+        Map<DistributableBigDecimal, BigDecimal> mapCorrLst =
+                distBigDecimalByListIntoMap(limitDist, lst, 2);
+        mapRet.put(0, mapCorrLst);
+        // корректировки постановки на второй список
+        Map<DistributableBigDecimal, BigDecimal> mapCorrLst2 =
+                distBigDecimalByListIntoMap(limitDist, lst2, 2);
+        mapRet.put(1, mapCorrLst2);
+        return mapRet;
+    }
+
     /**
      * Распределить число по коллекции чисел, пропорционально вычесть из каждого элемента lst
      * внести ИЗМЕНЕНИЯ(!) в коллекцию lst, УДАЛИТЬ(!) элементы с нулями
@@ -795,6 +842,7 @@ public class Utl {
 
     /**
      * Получить преобразованную по шаблону строку
+     *
      * @param str - исходная строка
      * @param par - параметры
      */
@@ -804,7 +852,7 @@ public class Utl {
             if (o instanceof BigDecimal) {
                 objStr = o.toString();
             } else if (o instanceof String) {
-                objStr = (String)o;
+                objStr = (String) o;
             } else if (o instanceof Integer) {
                 objStr = String.valueOf(o);
             }

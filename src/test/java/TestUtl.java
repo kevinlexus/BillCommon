@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -86,29 +87,6 @@ public class TestUtl {
     @Test
     public void isWorkUtlDistBigDecimalByList2() throws Exception {
 
-        @Getter @Setter
-        class KartVol implements DistributableBigDecimal {
-            // лиц.счет
-            private String lsk;
-            // площадь
-            private BigDecimal area;
-
-            public KartVol(String lsk, BigDecimal area) {
-                this.lsk = lsk;
-                this.area = area;
-            }
-
-            @Override
-            public BigDecimal getBdForDist() {
-                return area;
-            }
-
-            @Override
-            public void setBdForDist(BigDecimal bd) {
-            }
-
-        }
-
         List<KartVol> lst = new ArrayList<>(10);
 
         lst.add(new KartVol("0001", new BigDecimal("5.23")));
@@ -139,6 +117,79 @@ public class TestUtl {
         log.info("");
         BigDecimal amntDist = map.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("итого = {}", amntDist);
+
+    }
+
+    /**
+     * Проверка распределения списка чисел по другому списку,
+     * например кредитового сальдо по дебетовому
+     */
+    @Test
+    public void testUtlDistListByList() throws Exception {
+        List<KartVol> lst = new ArrayList<>(10);
+
+        lst.add(new KartVol("0001", new BigDecimal("5.11")));
+        lst.add(new KartVol("0002", new BigDecimal("55.21")));
+        lst.add(new KartVol("0003", new BigDecimal("99.27")));
+        lst.add(new KartVol("0004", new BigDecimal("5.05")));
+        lst.add(new KartVol("0005", new BigDecimal("575.13")));
+        lst.add(new KartVol("0006", new BigDecimal("7.27")));
+        BigDecimal amnt1 = lst.stream().map(KartVol::getBdForDist)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("итого 1 список:{}", amnt1) ;
+
+        List<KartVol> lst2 = new ArrayList<>(10);
+
+        lst2.add(new KartVol("0007", new BigDecimal("15.23")));
+        lst2.add(new KartVol("0008", new BigDecimal("58.29")));
+        lst2.add(new KartVol("0009", new BigDecimal("55.42")));
+        lst2.add(new KartVol("0010", new BigDecimal("1.28")));
+       // lst2.add(new KartVol("0011", new BigDecimal("1001.28")));
+       // lst2.add(new KartVol("0012", new BigDecimal("2051.28")));
+        BigDecimal amnt2 = lst2.stream().map(KartVol::getBdForDist)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("итого 2 список:{}", amnt2) ;
+
+        HashMap<Integer, Map<DistributableBigDecimal, BigDecimal>> map =
+                Utl.distListByListIntoMap(lst, lst2, 2);
+        log.info("снятие с первого списка:");
+        map.get(0).forEach((a,b)-> {
+            KartVol d = (KartVol) a;
+            log.info("lsk={}, summa={}", d.getLsk(), b);
+        });
+        amnt1 = map.get(0).values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("итого:{}", amnt1) ;
+        log.info("постановка на второй список:");
+        map.get(1).forEach((a,b)-> {
+            KartVol d = (KartVol) a;
+            log.info("lsk={}, summa={}", d.getLsk(), b);
+        });
+        amnt2 = map.get(0).values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("итого:{}", amnt2) ;
+
+        assertTrue(amnt1.compareTo(amnt2) == 0);
+    }
+
+    @Getter @Setter
+    class KartVol implements DistributableBigDecimal {
+        // лиц.счет
+        private String lsk;
+        // площадь
+        private BigDecimal area;
+
+        public KartVol(String lsk, BigDecimal area) {
+            this.lsk = lsk;
+            this.area = area;
+        }
+
+        @Override
+        public BigDecimal getBdForDist() {
+            return area;
+        }
+
+        @Override
+        public void setBdForDist(BigDecimal bd) {
+        }
 
     }
 
