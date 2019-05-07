@@ -734,7 +734,6 @@ public class Utl {
         return Utl.nvl(bdOne, 0).equals(Utl.nvl(bdTwo, 0));
     }
 
-
     /**
      * Распределить одну коллекцию чисел по другой (например кредит по дебету)
      *
@@ -861,5 +860,6 @@ public class Utl {
         }
         return str;
     }
+
 }
 
