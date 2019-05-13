@@ -333,16 +333,16 @@ public class Utl {
      * @param dt
      * @return
      */
-    public static Date getDateFromStr(String dt) {
+    public static Date getDateFromStr(String dt) throws ParseException {
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
         Date date = null;
-        try {
+        //try {
             date = formatter.parse(dt);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        //} catch (ParseException e) {
+        //    e.printStackTrace();
+        //}
         return date;
     }
 
@@ -352,7 +352,7 @@ public class Utl {
      * @param period
      * @return
      */
-    public static Date getDateFromPeriod(String period) {
+    public static Date getDateFromPeriod(String period) throws ParseException {
         String str = "01" + "." + period.substring(4, 6) + "." + period.substring(0, 4);
         return getDateFromStr(str);
     }
@@ -593,7 +593,7 @@ public class Utl {
      *
      * @param period
      */
-    public static String addMonths(String period, int n) {
+    public static String addMonths(String period, int n) throws ParseException {
         Date dt = getDateFromPeriod(period);
         Calendar calendar = new GregorianCalendar();
         calendar.clear(Calendar.ZONE_OFFSET);
