@@ -89,23 +89,25 @@ public class TestUtl {
 
         List<KartVol> lst = new ArrayList<>(10);
 
-        lst.add(new KartVol("0001", new BigDecimal("5.23")));
-        lst.add(new KartVol("0002", new BigDecimal("55.23")));
-        lst.add(new KartVol("0003", new BigDecimal("15.23")));
-        lst.add(new KartVol("0004", new BigDecimal("55.23")));
-        lst.add(new KartVol("0005", new BigDecimal("55.23")));
-        lst.add(new KartVol("0006", new BigDecimal("5.23")));
-        lst.add(new KartVol("0007", new BigDecimal("55.23")));
-        lst.add(new KartVol("0008", new BigDecimal("55.23")));
-        lst.add(new KartVol("0009", new BigDecimal("5.23")));
-        lst.add(new KartVol("0010", new BigDecimal("1.23")));
+        log.info("1.0 Распределить положительное число по коллекции положительных чисел");
+        // 1.0 Распределить положительное число по коллекции положительных чисел
+
+        lst.add(new KartVol("0002", new BigDecimal("0.02")));
+        lst.add(new KartVol("0003", new BigDecimal("3.17")));
+        lst.add(new KartVol("0004", new BigDecimal("2775.25")));
+        lst.add(new KartVol("0005", new BigDecimal("77.37")));
+        lst.add(new KartVol("0006", new BigDecimal("9.57")));
+        lst.add(new KartVol("0007", new BigDecimal("0.05")));
+        lst.add(new KartVol("0008", new BigDecimal("0.05")));
+        lst.add(new KartVol("0009", new BigDecimal("0.15")));
+        lst.add(new KartVol("0010", new BigDecimal("0.01")));
 
         BigDecimal amnt = lst.stream().map(KartVol::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("amnt area={}", amnt);
 
         // распределить
-        BigDecimal val = new BigDecimal("332.7929481");
-        Map<DistributableBigDecimal, BigDecimal> map = Utl.distBigDecimalByListIntoMap(val, lst, 7);
+        BigDecimal val = new BigDecimal("936.86");
+        Map<DistributableBigDecimal, BigDecimal> map = Utl.distPositiveBigDecimalByListIntoMap(val, lst, 2);
 
         log.info("распределение:");
         for (Map.Entry<DistributableBigDecimal, BigDecimal> t : map.entrySet()) {
@@ -117,7 +119,40 @@ public class TestUtl {
         log.info("");
         BigDecimal amntDist = map.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("итого = {}", amntDist);
+        assertTrue(amntDist.compareTo(val) ==0);
 
+
+        log.info("2.0 Распределить положительное или отрицательное число по коллекции положительных и отрицательных чисел");
+        // 2.0 Распределить положительное число по коллекции положительных и отрицательных чисел
+        lst.clear();
+        lst.add(new KartVol("0002", new BigDecimal("0.02")));
+        lst.add(new KartVol("0003", new BigDecimal("3.17")));
+        lst.add(new KartVol("0004", new BigDecimal("2775.25")));
+        lst.add(new KartVol("0005", new BigDecimal("77.37")));
+        lst.add(new KartVol("0006", new BigDecimal("9.57")));
+        lst.add(new KartVol("0007", new BigDecimal("-0.05")));
+        lst.add(new KartVol("0008", new BigDecimal("0.05")));
+        lst.add(new KartVol("0009", new BigDecimal("-1000.15")));
+        lst.add(new KartVol("0010", new BigDecimal("0.01")));
+
+        amnt = lst.stream().map(KartVol::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("amnt area={}", amnt);
+
+        // распределить
+        val = new BigDecimal("936.86");
+        map = Utl.distBigDecimalByListIntoMap(val, lst, 2);
+
+        log.info("распределение:");
+        for (Map.Entry<DistributableBigDecimal, BigDecimal> t : map.entrySet()) {
+            KartVol kartVol = (KartVol) t.getKey();
+            log.info("elem = {}, vol={}", kartVol.getLsk(),
+                    new DecimalFormat("#0.#############").format(t.getValue()));
+        }
+
+        log.info("");
+        amntDist = map.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        log.info("итого = {}", amntDist);
+        assertTrue(amntDist.compareTo(val) ==0);
     }
 
     /**

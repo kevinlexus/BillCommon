@@ -12,7 +12,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.*;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -20,12 +22,13 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Утилиты
  *
  * @author lev
- * @version 1.00
+ * @version 1.01
  */
 @Slf4j
 public class Utl {
@@ -813,7 +816,7 @@ public class Utl {
 
     /**
      * Распределить число по коллекции чисел, вернуть Map элементов с корректировками
-     * Распределяет корректно положительное число по массиву положит.-отрицат.чисел (можно смешанно)
+     * Распределяет корректно положительное или отрицательное число по массиву положит. и отрицат.чисел (можно смешанно)
      *
      * @param bd    - число для распределения
      * @param lst   - коллекция, содержащая числа по которым нужно распределить
@@ -821,14 +824,87 @@ public class Utl {
      */
     public static Map<DistributableBigDecimal, BigDecimal>
     distBigDecimalByListIntoMap(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
+        BigDecimal bdFact = bd.abs();
+        // узнать, есть ли в коллекции по которой распределять, отрицательные числа
+        List<? extends DistributableBigDecimal> lstNegative =
+                lst.stream().filter(t -> t.getBdForDist().compareTo(BigDecimal.ZERO) < 0)
+                .collect(Collectors.toList());
+        List<? extends DistributableBigDecimal> lstPositive =
+                lst.stream().filter(t -> t.getBdForDist().compareTo(BigDecimal.ZERO) > 0)
+                        .collect(Collectors.toList());
+        if (lstNegative.size() > 0) {
+            ArrayList<? extends DistributableBigDecimal> lstNegativeAbs
+                    = new ArrayList<>(lstNegative);
+            lstNegativeAbs.forEach(t->t.setBdForDist(t.getBdForDist()));
+            BigDecimal sumNegative = lstNegative.stream()
+                    .map(DistributableBigDecimal::getBdForDist)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+            BigDecimal proc = BigDecimal.ONE;
+            if (lstPositive.size() > 0) {
+                BigDecimal sumPositive = lstPositive.stream()
+                        .map(DistributableBigDecimal::getBdForDist)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+                proc = sumNegative.abs().divide(sumPositive, 20, RoundingMode.HALF_UP);
+            }
+            // фактические суммы к распределению
+            BigDecimal sumFactNegative = bdFact.multiply(proc).setScale(2, RoundingMode.HALF_UP);
+            Map<DistributableBigDecimal, BigDecimal> mapNegative =
+                    distPositiveBigDecimalByListIntoMap(sumFactNegative, lstNegativeAbs, round);
+
+            Map<DistributableBigDecimal, BigDecimal> mapPositive = new HashMap<>();
+            if (lstPositive.size() > 0) {
+                // положительная составляющая - остаток
+                BigDecimal sumFactPositive = bdFact.add(sumFactNegative);
+                if (sumFactPositive.compareTo(BigDecimal.ZERO) > 0) {
+                    mapPositive =
+                            distPositiveBigDecimalByListIntoMap(sumFactPositive, lstPositive, round);
+                }
+            }
+
+            // обратить знак в отрицательном распределении
+            mapNegative.entrySet().forEach(t->t.setValue(t.getValue().negate()));
+            mapNegative.putAll(mapPositive);
+
+            if (bd.signum()!=bdFact.signum()) {
+                // обратить знак, если распределяемое число - отрицательное
+                mapNegative.entrySet().forEach(t->t.setValue(t.getValue().negate()));
+            }
+            return mapNegative;
+        } else {
+            // нет отрицательных, распределить как обычно
+            return distPositiveBigDecimalByListIntoMap(bdFact, lst, round);
+        }
+
+
+    }
+
+    /**
+     * Распределить ПОЛОЖИТЕЛЬНОЕ число по коллекции ПОЛОЖИТЕЛЬНЫХ чисел, вернуть Map элементов с корректировками
+     *
+     * @param bd    - число для распределения
+     * @param lst   - коллекция, содержащая числа по которым нужно распределить
+     * @param round - число знаков округления (если с деньгами работать, то надо ставить 2)
+     */
+    public static Map<DistributableBigDecimal, BigDecimal>
+    distPositiveBigDecimalByListIntoMap(BigDecimal bd, List<? extends DistributableBigDecimal> lst, int round) {
         Map<DistributableBigDecimal, BigDecimal> mapVol = new HashMap<>();
-        BigDecimal sum = lst.stream().map(DistributableBigDecimal::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
-        for (DistributableBigDecimal elem : lst) {
+        BigDecimal sum = lst.stream().map(DistributableBigDecimal::getBdForDist)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        for (DistributableBigDecimal elem : lst.stream().sorted(  // отсортировать,
+                Comparator.comparing(DistributableBigDecimal::getBdForDist))// чтобы небольшие числа шли первыми - так точнее
+                .collect(Collectors.toList())) {
             // найти пропорцию снятия с данного элемента
+/*
+            log.info("elem={}", elem.getBdForDist());
+            log.info("sum={}", sum);
+            log.info("bd={}", bd);
+            log.info("divide={}", elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP));
+*/
             BigDecimal sumSubstract =
                     bd.multiply(elem.getBdForDist().divide(sum, 20, BigDecimal.ROUND_HALF_UP))
                             .setScale(round, BigDecimal.ROUND_HALF_UP);
-
+//            log.info("sumSubstract={}", sumSubstract);
             // уменьшить общую сумму;
             sum = sum.subtract(elem.getBdForDist());
             // добавить сумму в элемент
