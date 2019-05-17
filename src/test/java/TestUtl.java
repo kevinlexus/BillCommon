@@ -125,8 +125,8 @@ public class TestUtl {
         log.info("2.0 Распределить положительное или отрицательное число по коллекции положительных и отрицательных чисел");
         // 2.0 Распределить положительное число по коллекции положительных и отрицательных чисел
         lst.clear();
-        lst.add(new KartVol("0002", new BigDecimal("0.02")));
-        lst.add(new KartVol("0003", new BigDecimal("3.17")));
+        lst.add(new KartVol("0001", new BigDecimal("0.02")));
+        lst.add(new KartVol("0002", new BigDecimal("-0.02")));
         lst.add(new KartVol("0004", new BigDecimal("2775.25")));
         lst.add(new KartVol("0005", new BigDecimal("77.37")));
         lst.add(new KartVol("0006", new BigDecimal("9.57")));

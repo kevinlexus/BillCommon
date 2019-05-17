@@ -839,13 +839,13 @@ public class Utl {
             BigDecimal sumNegative = lstNegative.stream()
                     .map(DistributableBigDecimal::getBdForDist)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal sumAmountAbs = lst.stream()
+                    .map(t->t.getBdForDist().abs())
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
 
             BigDecimal proc = BigDecimal.ONE;
             if (lstPositive.size() > 0) {
-                BigDecimal sumPositive = lstPositive.stream()
-                        .map(DistributableBigDecimal::getBdForDist)
-                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-                proc = sumNegative.abs().divide(sumPositive, 20, RoundingMode.HALF_UP);
+                proc = sumNegative.abs().divide(sumAmountAbs, 20, RoundingMode.HALF_UP);
             }
             // фактические суммы к распределению
             BigDecimal sumFactNegative = bdFact.multiply(proc).setScale(2, RoundingMode.HALF_UP);
