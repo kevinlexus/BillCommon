@@ -7,10 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static junit.framework.TestCase.assertTrue;
 
@@ -89,7 +86,7 @@ public class TestUtl {
 
         List<KartVol> lst = new ArrayList<>(10);
 
-        log.info("1.0 Распределить положительное число по коллекции положительных чисел");
+        log.info("1.0 Распределить положительное число по коллекции положительных чисел - упрощённо");
         // 1.0 Распределить положительное число по коллекции положительных чисел
 
         lst.add(new KartVol("0002", new BigDecimal("0.02")));
@@ -122,10 +119,28 @@ public class TestUtl {
         assertTrue(amntDist.compareTo(val) ==0);
 
 
-        log.info("2.0 Распределить положительное или отрицательное число по коллекции положительных и отрицательных чисел");
-        // 2.0 Распределить положительное число по коллекции положительных и отрицательных чисел
+        log.info("2.0 Распределить отрицательное число по коллекции положительных чисел");
         lst.clear();
         lst.add(new KartVol("0001", new BigDecimal("0.02")));
+        distBd(lst, "936.86");
+
+        log.info("2.1 Распределить положительное число по коллекции отрицательных чисел");
+        lst.clear();
+        lst.add(new KartVol("0001", new BigDecimal("-0.02")));
+        distBd(lst, "936.86");
+
+        log.info("2.2 Распределить положительное число по коллекции положительных чисел");
+        lst.clear();
+        lst.add(new KartVol("0001", new BigDecimal("0.02")));
+        distBd(lst, "936.86");
+
+        log.info("2.3 Распределить отрицательное число по коллекции отрицательных чисел");
+        lst.clear();
+        lst.add(new KartVol("0001", new BigDecimal("-0.02")));
+        distBd(lst, "-936.86");
+
+        log.info("2.4 Распределить отрицательное число по коллекции положительных и отрицательных чисел");
+        lst.clear();
         lst.add(new KartVol("0002", new BigDecimal("-0.02")));
         lst.add(new KartVol("0004", new BigDecimal("2775.25")));
         lst.add(new KartVol("0005", new BigDecimal("77.37")));
@@ -134,21 +149,39 @@ public class TestUtl {
         lst.add(new KartVol("0008", new BigDecimal("0.05")));
         lst.add(new KartVol("0009", new BigDecimal("-1000.15")));
         lst.add(new KartVol("0010", new BigDecimal("0.01")));
+        distBd(lst, "-936.86");
 
+        log.info("2.4 Распределить положительное число по коллекции положительных и отрицательных чисел");
+        lst.clear();
+        lst.add(new KartVol("0002", new BigDecimal("-0.02")));
+        lst.add(new KartVol("0004", new BigDecimal("2775.25")));
+        lst.add(new KartVol("0005", new BigDecimal("77.37")));
+        lst.add(new KartVol("0006", new BigDecimal("9.57")));
+        lst.add(new KartVol("0007", new BigDecimal("-0.05")));
+        lst.add(new KartVol("0008", new BigDecimal("0.05")));
+        lst.add(new KartVol("0009", new BigDecimal("-1000.15")));
+        lst.add(new KartVol("0010", new BigDecimal("0.01")));
+        distBd(lst, "936.86");
+
+
+    }
+
+    public void distBd(List<KartVol> lst, String strBd) {
+        BigDecimal amnt;
+        BigDecimal val;
+        Map<DistributableBigDecimal, BigDecimal> map;
+        BigDecimal amntDist;
         amnt = lst.stream().map(KartVol::getBdForDist).reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("amnt area={}", amnt);
-
         // распределить
-        val = new BigDecimal("936.86");
+        val = new BigDecimal(strBd);
         map = Utl.distBigDecimalByListIntoMap(val, lst, 2);
-
         log.info("распределение:");
         for (Map.Entry<DistributableBigDecimal, BigDecimal> t : map.entrySet()) {
             KartVol kartVol = (KartVol) t.getKey();
             log.info("elem = {}, vol={}", kartVol.getLsk(),
                     new DecimalFormat("#0.#############").format(t.getValue()));
         }
-
         log.info("");
         amntDist = map.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
         log.info("итого = {}", amntDist);

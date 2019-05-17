@@ -862,8 +862,10 @@ public class Utl {
                 }
             }
 
-            // обратить знак в отрицательном распределении
-            mapNegative.entrySet().forEach(t->t.setValue(t.getValue().negate()));
+            if (lstPositive.size() > 0) {
+                // обратить знак в отрицательном распределении, если в распределении участвовали положительные числа
+                mapNegative.entrySet().forEach(t -> t.setValue(t.getValue().negate()));
+            }
             mapNegative.putAll(mapPositive);
 
             if (bd.signum()!=bdFact.signum()) {
@@ -872,8 +874,14 @@ public class Utl {
             }
             return mapNegative;
         } else {
-            // нет отрицательных, распределить как обычно
-            return distPositiveBigDecimalByListIntoMap(bdFact, lst, round);
+            // нет отрицательных, распределить только по положительным
+            Map<DistributableBigDecimal, BigDecimal> mapNegative =
+                    distPositiveBigDecimalByListIntoMap(bdFact, lst, round);
+            if (bd.signum()!=bdFact.signum()) {
+                // обратить знак, если распределяемое число - отрицательное
+                mapNegative.entrySet().forEach(t->t.setValue(t.getValue().negate()));
+            }
+            return mapNegative;
         }
 
 
