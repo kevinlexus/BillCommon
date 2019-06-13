@@ -104,7 +104,7 @@ public class TestUtl {
 
         // распределить
         BigDecimal val = new BigDecimal("936.86");
-        Map<DistributableBigDecimal, BigDecimal> map = Utl.distPositiveBigDecimalByListIntoMap(val, lst, 2);
+        Map<DistributableBigDecimal, BigDecimal> map = Utl.distBigDecimalByListIntoMap(val, lst, 2);
 
         log.info("распределение:");
         for (Map.Entry<DistributableBigDecimal, BigDecimal> t : map.entrySet()) {
