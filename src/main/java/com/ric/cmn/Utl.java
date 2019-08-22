@@ -210,6 +210,17 @@ public class Utl {
         return (bd.compareTo(rangeBegin) >= 0 && bd.compareTo(rangeEnd) <= 0);
     }
 
+    /**
+     * Находится ли одно Integer в диапазоне двух других Integer, включительно
+     *
+     * @param val         - значение для поиска
+     * @param rangeBegin - диапазон, начало
+     * @param rangeEnd   - диапазон, окончание
+     */
+    public static boolean between(Integer val, Integer rangeBegin, Integer rangeEnd) {
+        return (val.compareTo(rangeBegin) >= 0 && val.compareTo(rangeEnd) <= 0);
+    }
+
     // вернуть кол-во лет между датами
     public static int getDiffYears(Date first, Date last) {
         Calendar a = getCalendar(first);
