@@ -473,7 +473,7 @@ public class Utl {
     /**
      * Получить составляющую MM из строки период YYYYMM
      *
-     * @param period
+     * @param period - период в формате YYYYMM
      */
     public static String getPeriodMonth(String period) {
         return period.substring(4, 6);
@@ -482,22 +482,36 @@ public class Utl {
     /**
      * Получить составляющую YYYY из строки период YYYYMM
      *
-     * @param period
+     * @param period - период в формате YYYYMM
      */
     public static String getPeriodYear(String period) {
         return period.substring(0, 4);
     }
 
     /**
-     * Конвертировать период ГГГГММ в наименование периода типа Апрель 2017, со склонением
+     * Преобразовать период из формата YYYYMM в MMYYYY
+     * @param period - период в формате YYYYMM
+     */
+    public static String getPeriodToMonthYear(String period) {
+        return getPeriodMonth(period)+getPeriodYear(period);
+    }
+
+    /**
+     * Преобразовать период из формата MMYYYY в YYYYMM
+     * @param period - период в формате MMYYYY
+     */
+    public static String getPeriodToYearMonth(String period) {
+        return getPeriodYear(period)+getPeriodMonth(period);
+    }
+
+    /**
+     * Конвертировать период YYYYMM в наименование периода типа Апрель 2017, со склонением
      *
-     * @param period
+     * @param period - период в формате YYYYMM
      * @param tp     - 0 - нач.период, 1 - кон.период
-     * @return
      */
     public static String getPeriodName(String period, Integer tp) {
-        String str = getMonthName(Integer.valueOf(period.substring(4, 6)), tp) + " " + period.substring(0, 4);
-        return str;
+        return getMonthName(Integer.valueOf(period.substring(4, 6)), tp) + " " + period.substring(0, 4);
     }
 
     public static String getMonthName(Integer month, Integer tp) {
