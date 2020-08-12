@@ -154,6 +154,14 @@ public class Utl {
         return calendar.getTime();
     }
 
+    // вернуть XMLGregorianCalendar
+    public static XMLGregorianCalendar getXMLGregorianCalendarFromDate(Date dt) throws DatatypeConfigurationException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String date = sdf.format(dt);
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(date);
+    }
+
     /**
      * вернуть true если хотя бы одна из дат находится в двух диапазонах периода
      *
