@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.ric.cmn</groupId>
   <artifactId>BillCommon</artifactId>
-  <version>0.0.5</version>
+  <version>0.0.6</version>
     <name>BillCommon</name>
   <description>Common utilities for BillWeb and Others</description>
 
